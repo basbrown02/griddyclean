@@ -40,8 +40,10 @@ cd griddy2
 npm install
 ```
 
-3. Run the development server:
+3. Create your env file (one command), then run the dev server:
 ```bash
+cp .env.example .env.local
+# Edit .env.local and paste your API keys
 npm run dev
 ```
 
@@ -93,15 +95,16 @@ griddy2/
 ## Configuration
 
 ### Google Maps API
-The application uses a Google Maps API key for map functionality. The key is configured in the `GoogleMap.tsx` component.
+Provide your Google Maps API key in `.env.local` using `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` (and optionally `GOOGLE_MAPS_API_KEY` for server).
 
 ### Environment Variables
-Create a `.env.local` file for any environment-specific configurations:
+Copy `.env.example` to `.env.local`:
 
 ```env
 OPENAI_API_KEY=your_openai_api_key
+GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 ML_SERVICE_URL=http://localhost:3000/api/echo-ml
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
 ```
 
 ## Available Scripts

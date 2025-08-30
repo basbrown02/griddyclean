@@ -37,7 +37,10 @@ export async function POST(req: Request) {
 
     // Step 2: Geocode the place with Google Geocoding API
     const googleKey =
-      process.env.GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyA_XiEnTAbG8Iecguywbr-8q0OH0l0Zev8'
+      process.env.GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+    if (!googleKey) {
+      return NextResponse.json({ error: 'Missing Google Maps API key' }, { status: 500 })
+    }
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
       extracted.locationQuery
     )}&key=${googleKey}`

@@ -26,6 +26,7 @@ export function GoogleMap({ className, markers = [] }: GoogleMapProps) {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
   const markerInstancesRef = useRef<any[]>([])
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
   useEffect(() => {
     // Load Google Maps API once
@@ -34,8 +35,12 @@ export function GoogleMap({ className, markers = [] }: GoogleMapProps) {
     ) as HTMLScriptElement | null
 
     if (!existing) {
+      if (!apiKey) {
+        console.error('Missing NEXT_PUBLIC_GOOGLE_MAPS_API_KEY')
+        return
+      }
       const script = document.createElement('script')
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA_XiEnTAbG8Iecguywbr-8q0OH0l0Zev8&libraries=drawing&callback=initMap`
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=drawing&callback=initMap`
       script.async = true
       script.defer = true
       document.head.appendChild(script)
