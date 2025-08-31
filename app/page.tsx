@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { GoogleMap, type MarkerData } from '@/components/GoogleMap'
 import { AIInputWithLoading } from '@/components/ui/ai-input-with-loading'
 import { Button } from '@/components/ui/button'
+import { scoreGrid, listDates } from '@/lib/api'
 
 interface Message {
   id: string
@@ -50,6 +51,29 @@ export default function Home() {
       })
       const data = await res.json()
       if (res.ok) {
+        const coord = data?.result?.coordinate
+        if (coord?.lat && coord?.lng) {
+          try {
+            const { dates } = await listDates()
+            const date = dates?.[0] ?? '2020-09-01'
+            const ml = await scoreGrid({
+              lat: coord.lat,
+              lon: coord.lng,
+              date,
+              grid_size: 25,
+              step_deg: 0.1,
+            })
+            setMapMarkers(
+              ml.top3.map((p: { lat: number; lon: number; value: number }, i: number) => ({
+                lat: p.lat,
+                lng: p.lon,
+                title: `Rank ${i + 1} (${p.value.toFixed(2)})`,
+              }))
+            )
+          } catch (err) {
+            console.error('ML fetch failed', err)
+          }
+        }
         const text = data?.result
           ? `Using Google Maps, I found coordinates for ${data.result.locationQuery}: (${data.result.coordinate?.lat?.toFixed?.(4)}, ${data.result.coordinate?.lng?.toFixed?.(4)}).`
           : data?.message ?? 'Done.'
